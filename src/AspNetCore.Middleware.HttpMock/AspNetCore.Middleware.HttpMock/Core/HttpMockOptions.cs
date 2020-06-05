@@ -6,6 +6,6 @@ namespace AspNetCore.Middleware.HttpMock.Core
 {
   public class HttpMockOptions
   {
-    public string RequestHeaderPrefix { get; set; }
+    public string RequestHeaderPrefix { get; set; } = "x-mock";
   }
 }

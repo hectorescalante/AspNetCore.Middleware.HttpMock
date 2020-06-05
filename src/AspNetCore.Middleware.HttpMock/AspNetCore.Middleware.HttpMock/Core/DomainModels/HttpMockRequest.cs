@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace AspNetCore.Middleware.HttpMock.Core.DomainModels
 {
-  public class MockRequest
+  public class HttpMockRequest
   {
-    public MockRequest() { }
+    public HttpMockRequest() { }
 
-    public MockRequest(string requestKey)
+    public HttpMockRequest(string requestKey)
     {
       var request = requestKey.Split('|');
 

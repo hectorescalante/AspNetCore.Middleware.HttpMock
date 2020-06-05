@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AspNetCore.Middleware.HttpMock.Core
+﻿namespace AspNetCore.Middleware.HttpMock.Core
 {
-  class RequestHeaderValues
+  public static class RequestHeaderValues
   {
-    public static string RequestKey(string prefix) => $"{prefix}-requestkey";
-    public static string Host(string prefix) => $"{prefix}-host";
+    public static string RequestKeyHeader(this HttpMockOptions mockOptions) => $"{mockOptions.RequestHeaderPrefix}-requestkey";
+    public static string HostHeader(this HttpMockOptions mockOptions) => $"{mockOptions.RequestHeaderPrefix}-host";
+    public static string ContentTypeHeader() => "content-type";
+
   }
 }

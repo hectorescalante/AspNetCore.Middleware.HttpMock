@@ -20,8 +20,8 @@ namespace AspNetCore.Middleware.HttpMock.Infrastructure
       serviceCollection.AddScoped<IMockStorage, CacheStorage>();
       if (customStorage != null)  
         serviceCollection.AddScoped(storage => customStorage);
-      serviceCollection.AddScoped<IMockRepository, MockRepository>();
-      serviceCollection.AddScoped<HttpMockService>();
+      serviceCollection.AddScoped<IMockRepository, HttpMockRepository>();
+      serviceCollection.AddScoped<IMockService, HttpMockService>();
       return serviceCollection;
     }
   }

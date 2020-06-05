@@ -4,11 +4,11 @@ using System.Text;
 
 namespace AspNetCore.Middleware.HttpMock.Core.DomainModels
 {
-  public class MockResponse
+  public class HttpMockResponse
   {
-    public MockResponse() { }
+    public HttpMockResponse() { }
 
-    public MockResponse(string contentType, string content)
+    public HttpMockResponse(string contentType, string content)
     {
       ContentType = contentType;
       BodyContent = content;

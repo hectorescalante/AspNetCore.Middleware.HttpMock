@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace AspNetCore.Middleware.HttpMock.Infrastructure
 {
-  internal class MockRepository : IMockRepository
+  internal class HttpMockRepository : IMockRepository
   {
     private readonly ILogger _logger;
     private readonly IMockStorage _mockStorage;
 
-    public MockRepository(ILogger<MockRepository> logger, IMockStorage mockStorage)
+    public HttpMockRepository(ILogger<HttpMockRepository> logger, IMockStorage mockStorage)
     {
       _logger = logger;
       _mockStorage = mockStorage;
@@ -27,9 +27,7 @@ namespace AspNetCore.Middleware.HttpMock.Infrastructure
     {
       var mockBodyContent = mockInstance.Response.BodyContent;
       mockInstance.Response.BodyContent = mockBodyContent.ToBase64String();
-
       _logger.LogInformation($"Created Mock with RequestKey: {key}");
-
       return await _mockStorage.SaveAsync(key, mockInstance);
     }
 

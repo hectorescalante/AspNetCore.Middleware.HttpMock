@@ -6,12 +6,12 @@
 
     public MockInstance(string requestKey, string contentType, string bodyContent)
     {
-      Request = new MockRequest(requestKey);
-      Response = new MockResponse(contentType, bodyContent);
+      Request = new HttpMockRequest(requestKey);
+      Response = new HttpMockResponse(contentType, bodyContent);
     }
 
-    public MockRequest Request { get; set; }
-    public MockResponse Response { get; set; }
+    public HttpMockRequest Request { get; set; }
+    public HttpMockResponse Response { get; set; }
 
   }
 }

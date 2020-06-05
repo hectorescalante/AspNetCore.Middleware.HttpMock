@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCore.Middleware.HttpMock.Core
 {
-  public class HttpMockService
+  public class HttpMockService : IMockService
   {
     private readonly ILogger _logger;
     private readonly HttpMockOptions _mockOptions;
@@ -20,27 +20,27 @@ namespace AspNetCore.Middleware.HttpMock.Core
       _mockRepository = mockRepository;
     }
 
-    public string CreateKey(MockRequest mockRequest)
+    public string CreateKey(HttpMockRequest mockRequest)
     {
       var requestKey = mockRequest.GetRequestKey().ToBase64String();
       _logger.LogInformation($"Created RequestKey: {requestKey}");
       return requestKey;
     }
 
-    public async Task<MockInstance> CreateMock(string requestKey, string contentType, string bodyContent)
+    public async Task<MockInstance> CreateMockAsync(string requestKey, string contentType, string bodyContent)
     {
       if (requestKey == null) throw new ArgumentException("RequestKey is required");
       return await _mockRepository.SaveAsync(requestKey.ToBase64String(), new MockInstance(requestKey, contentType, bodyContent));
     }
 
-    public async Task DeleteMock(string requestKey)
+    public async Task DeleteMockAsync(string requestKey)
     {
       if (requestKey == null) throw new ArgumentException("RequestKey is required");
       await _mockRepository.DeleteAsync(requestKey);
       _logger.LogInformation($"Deleted Mock with RequestKey: {requestKey}");
     }
 
-    public async Task<MockInstance> GetMock(MockRequest mockRequest)
+    public async Task<MockInstance> GetMockAsync(HttpMockRequest mockRequest)
     {
       var requestKey = mockRequest.GetRequestKey().ToBase64String();
       _logger.LogInformation($"Searching Mock with RequestKey: {requestKey}");
