@@ -20,47 +20,72 @@ namespace AspNetCore.Middleware.HttpMock.Infrastructure
       _logger = logger;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext, IHttpContextManager httpContextManager, IOptionsSnapshot<HttpMockOptions> mockOptions, IMockService mockService)
-    {
-      if (httpContextManager.ContainsHeader(mockOptions.Value.CreateKeyHeader()))
-      {
-        _logger.LogInformation("Creating key...");
-        var requestKey = mockService.CreateKey(await httpContextManager.GetHttpMockRequestAsync());
-        await httpContextManager.WriteResponseAsync(HttpStatusCode.OK, RequestHeaderValues.ContentTypeHeader(), requestKey);
-        return;
-      }
-      else if (httpContextManager.ContainsHeader(mockOptions.Value.CreateMockHeader()))
-      {
-        _logger.LogInformation("Creating mock...");
-        var requestMock = await httpContextManager.GetHttpMockRequestAsync();
-        var requestKey = httpContextManager.GetHeaderValue(mockOptions.Value.RequestKeyHeader());
-        var createdMock = await mockService.CreateMockAsync(requestKey.FromBase64String(), requestMock.ContentType, requestMock.BodyContent);
+    private IHttpContextManager ContextManager { get; set; }
+    private HttpMockOptions MockOptions { get; set; }
+    private IMockService MockService { get; set; }
 
-        await httpContextManager.WriteResponseAsync(HttpStatusCode.Created, createdMock.Response.ContentType, createdMock.Response.BodyContent.FromBase64String());
-        return;
-      }
-      else if (httpContextManager.ContainsHeader(mockOptions.Value.DeleteMockHeader()))
+    public async Task InvokeAsync(HttpContext httpContext, IOptionsSnapshot<HttpMockOptions> mockOptions, IMockService mockService)
+    {
+      ContextManager = new HttpContextManager(httpContext, mockOptions);
+      MockOptions = mockOptions.Value;
+      MockService = mockService;
+
+      if (ContextManager.ContainsHeader(MockOptions.CreateKeyHeader()))
       {
-        _logger.LogInformation("Deleting mock...");
-        await mockService.DeleteMockAsync(httpContextManager.GetHeaderValue(mockOptions.Value.RequestKeyHeader()));
-        return;
+        await CreateKeyAsync();
+      }
+      else if (ContextManager.ContainsHeader(MockOptions.CreateMockHeader()))
+      {
+        await CreateMockAsync();
+      }
+      else if (ContextManager.ContainsHeader(MockOptions.DeleteMockHeader()))
+      {
+        await DeleteMockAsync();
       }
       else
       {
-        _logger.LogInformation("Getting mock...");
-        var requestMock = await httpContextManager.GetHttpMockRequestAsync();
-        var mock = await mockService.GetMockAsync(requestMock);
-        if (mock == null)
-        {
-          httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
-          await mockService.CreateMockAsync(requestMock.GetRequestKey(), requestMock.ContentType, null);
-          return;
-        }
+        await ReturnMockAsync();
+      }
 
-        await httpContextManager.WriteResponseAsync(HttpStatusCode.OK, mock.Response.ContentType, mock.Response.BodyContent.FromBase64String());
+      return;
+    }
 
+    private async Task CreateKeyAsync()
+    {
+      _logger.LogInformation("Creating key...");
+      var requestMock = await ContextManager.GetHttpMockRequestAsync();
+      var requestKey = MockService.CreateKey(requestMock);
+      await ContextManager.WriteResponseAsync(HttpStatusCode.OK, "text/plain", requestKey);
+    }
+
+    private async Task CreateMockAsync()
+    {
+      _logger.LogInformation("Creating mock...");
+      var requestMock = await ContextManager.GetHttpMockRequestAsync();
+      var requestKey = ContextManager.GetHeaderValue(MockOptions.RequestKeyHeader());
+      var createdMock = await MockService.CreateMockAsync(requestKey.FromBase64String(), requestMock.ContentType, requestMock.BodyContent);
+      await ContextManager.WriteResponseAsync(HttpStatusCode.Created, createdMock.Response.ContentType, createdMock.Response.BodyContent.FromBase64String());
+    }
+
+    private async Task DeleteMockAsync()
+    {
+      _logger.LogInformation("Deleting mock...");
+      await MockService.DeleteMockAsync(ContextManager.GetHeaderValue(MockOptions.RequestKeyHeader()));
+    }
+
+    private async Task ReturnMockAsync()
+    {
+      _logger.LogInformation("Getting mock...");
+      var requestMock = await ContextManager.GetHttpMockRequestAsync();
+      var mock = await MockService.GetMockAsync(requestMock);
+      if (mock == null)
+      {
+        //httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+        //await mockService.CreateMockAsync(requestMock.GetRequestKey(), requestMock.ContentType, null);
+        await ContextManager.WriteResponseAsync(HttpStatusCode.NotFound, requestMock.ContentType, null);
         return;
       }
+      await ContextManager.WriteResponseAsync(HttpStatusCode.OK, mock.Response.ContentType, mock.Response.BodyContent.FromBase64String());
     }
   }
 }

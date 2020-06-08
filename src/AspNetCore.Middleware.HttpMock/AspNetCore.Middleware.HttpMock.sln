@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.Middleware.HttpMock", "AspNetCore.Middleware.HttpMock\AspNetCore.Middleware.HttpMock.csproj", "{2607AA69-C09C-4B36-A7C1-F06345269DAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpMock.Tests", "HttpMock.Tests\HttpMock.Tests.csproj", "{3386CF35-F250-473A-A7AD-28ABC85724B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpMock.Tests", "HttpMock.Tests\HttpMock.Tests.csproj", "{3386CF35-F250-473A-A7AD-28ABC85724B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpMock.Sample", "HttpMock.Sample\HttpMock.Sample.csproj", "{78F33722-8755-4655-99CC-96D7D2994080}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{3386CF35-F250-473A-A7AD-28ABC85724B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3386CF35-F250-473A-A7AD-28ABC85724B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3386CF35-F250-473A-A7AD-28ABC85724B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78F33722-8755-4655-99CC-96D7D2994080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78F33722-8755-4655-99CC-96D7D2994080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78F33722-8755-4655-99CC-96D7D2994080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78F33722-8755-4655-99CC-96D7D2994080}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

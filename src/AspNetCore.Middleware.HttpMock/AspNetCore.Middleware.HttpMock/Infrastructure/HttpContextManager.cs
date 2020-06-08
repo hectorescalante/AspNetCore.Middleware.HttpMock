@@ -9,7 +9,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +25,11 @@ namespace AspNetCore.Middleware.HttpMock.Infrastructure
       _httpContext = httpContext;
       _mockOptions = mockOptions.Value;
     }
+
+    //public static IHttpContextManager Create(HttpContext httpContext, IOptionsSnapshot<HttpMockOptions> mockOptions)
+    //{
+    //  return new HttpContextManager(httpContext, mockOptions);
+    //}
 
     public async Task<HttpMockRequest> GetHttpMockRequestAsync()
     {
@@ -74,7 +78,7 @@ namespace AspNetCore.Middleware.HttpMock.Infrastructure
     {
       _httpContext.Response.StatusCode = (int)statusCode;
       _httpContext.Response.ContentType = contentType;
-      await _httpContext.Response.WriteAsync(content, Encoding.UTF8);
+      await _httpContext.Response.WriteAsync(content ?? string.Empty, Encoding.UTF8);
     }
 
     public bool ContainsHeader(string headerName) => _httpContext.Request.Headers.ContainsKey(headerName);

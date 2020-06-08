@@ -32,7 +32,7 @@ namespace AspNetCore.Middleware.HttpMock.Core
       }
       catch (Exception)
       {
-        return default;
+        return base64String;
       }
     }
 
