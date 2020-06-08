@@ -8,14 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Moq;
-using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.IO.Compression;
-using System.IO.Pipelines;
 using System.Net;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -36,7 +29,7 @@ namespace HttpMock.Tests
 
       var mockOptions = _autoFixture.Freeze<Mock<IOptionsSnapshot<HttpMockOptions>>>();
       var httpContext = _autoFixture.Create<DefaultHttpContext>();
-      httpContext.Request.Headers.Add(mockOptions.Object.Value.CreateKeyHeader(), new StringValues("true"));
+      httpContext.Request.Headers.Add(mockOptions.Object.Value.ActionHeader(), new StringValues(RequestHeaderActions.CreateKey));
       var mockService = _autoFixture.Freeze<Mock<IMockService>>();
       mockService
         .Setup(mock => mock.CreateKey(It.IsAny<HttpMockRequest>()))
@@ -57,7 +50,7 @@ namespace HttpMock.Tests
       //Arrange
       var mockOptions = _autoFixture.Freeze<Mock<IOptionsSnapshot<HttpMockOptions>>>();
       var httpContext = _autoFixture.Create<DefaultHttpContext>();
-      httpContext.Request.Headers.Add(mockOptions.Object.Value.CreateMockHeader(), new StringValues("true"));
+      httpContext.Request.Headers.Add(mockOptions.Object.Value.ActionHeader(), new StringValues(RequestHeaderActions.CreateMock));
       httpContext.Request.Headers.Add(mockOptions.Object.Value.RequestKeyHeader(), new StringValues("RequestKey".ToBase64String()));
       var mockService = _autoFixture.Freeze<Mock<IMockService>>();
       mockService
@@ -79,7 +72,7 @@ namespace HttpMock.Tests
       //Arrange
       var mockOptions = _autoFixture.Freeze<Mock<IOptionsSnapshot<HttpMockOptions>>>();
       var httpContext = _autoFixture.Create<DefaultHttpContext>();
-      httpContext.Request.Headers.Add(mockOptions.Object.Value.DeleteMockHeader(), new StringValues("true"));
+      httpContext.Request.Headers.Add(mockOptions.Object.Value.ActionHeader(), new StringValues(RequestHeaderActions.DeleteMock));
       var mockService = _autoFixture.Freeze<Mock<IMockService>>();
 
       //Act

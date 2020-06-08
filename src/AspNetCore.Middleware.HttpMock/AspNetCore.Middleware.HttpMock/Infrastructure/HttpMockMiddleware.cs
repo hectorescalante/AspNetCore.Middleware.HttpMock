@@ -30,15 +30,17 @@ namespace AspNetCore.Middleware.HttpMock.Infrastructure
       MockOptions = mockOptions.Value;
       MockService = mockService;
 
-      if (ContextManager.ContainsHeader(MockOptions.CreateKeyHeader()))
+      var mockAction = ContextManager.GetHeaderValue(MockOptions.ActionHeader());
+
+      if (mockAction == RequestHeaderActions.CreateKey)
       {
         await CreateKeyAsync();
       }
-      else if (ContextManager.ContainsHeader(MockOptions.CreateMockHeader()))
+      else if (mockAction == RequestHeaderActions.CreateMock)
       {
         await CreateMockAsync();
       }
-      else if (ContextManager.ContainsHeader(MockOptions.DeleteMockHeader()))
+      else if (mockAction == RequestHeaderActions.DeleteMock)
       {
         await DeleteMockAsync();
       }
@@ -80,8 +82,7 @@ namespace AspNetCore.Middleware.HttpMock.Infrastructure
       var mock = await MockService.GetMockAsync(requestMock);
       if (mock == null)
       {
-        //httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
-        //await mockService.CreateMockAsync(requestMock.GetRequestKey(), requestMock.ContentType, null);
+        _logger.LogInformation("Mock not found!");
         await ContextManager.WriteResponseAsync(HttpStatusCode.NotFound, requestMock.ContentType, null);
         return;
       }

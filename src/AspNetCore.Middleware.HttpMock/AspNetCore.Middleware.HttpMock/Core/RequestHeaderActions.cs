@@ -2,8 +2,9 @@
 {
   public static class RequestHeaderActions
   {
-    public static string CreateKeyHeader(this HttpMockOptions mockOptions) => $"{mockOptions.RequestHeaderPrefix}-createkey";
-    public static string CreateMockHeader(this HttpMockOptions mockOptions) => $"{mockOptions.RequestHeaderPrefix}-createmock";
-    public static string DeleteMockHeader(this HttpMockOptions mockOptions) => $"{mockOptions.RequestHeaderPrefix}-deletemock";
+    public static string ActionHeader(this HttpMockOptions mockOptions) => $"{mockOptions.RequestHeaderPrefix}-action";
+    public static string CreateKey = "createkey";
+    public static string CreateMock = "createmock";
+    public static string DeleteMock = "deletemock";
   }
 }
